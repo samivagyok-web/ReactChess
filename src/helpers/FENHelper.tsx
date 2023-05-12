@@ -10,7 +10,9 @@ import WhiteKnight from "../assets/pieces/white/WhiteKnight";
 import WhitePawn from "../assets/pieces/white/WhitePawn";
 import WhiteQueen from "../assets/pieces/white/WhiteQueen";
 import WhiteRook from "../assets/pieces/white/WhiteRook";
+import { CellItem } from "../types/types";
 import { FENModel } from "./FENModel";
+import { getPieceFromCode } from "./PieceStrategy";
 
 export const getPieceIllustration = (character: string): JSX.Element => {
     switch (character) {
@@ -34,20 +36,20 @@ export const decipherFEN = (FEN: string): FENModel => {
     const splitFEN = FEN.split(" ");
     const sanitizedPiecePlacement = splitFEN[0].replaceAll('/', '');
     
-    let piecePlacement: string = '';
+    let piecePlacement: CellItem[] = [];
 
     for (let i = 0; i < sanitizedPiecePlacement.length; i++) {
         if (sanitizedPiecePlacement[i] > '0' && sanitizedPiecePlacement[i] < '9') {
             const numericValue = parseInt(sanitizedPiecePlacement[i]);
 
             for (let j = 0; j < numericValue; j++) {
-                piecePlacement = piecePlacement + " ";
+                piecePlacement.push(undefined);
             }
 
             continue;
         }
 
-        piecePlacement = piecePlacement + sanitizedPiecePlacement[i];
+        piecePlacement.push(getPieceFromCode(sanitizedPiecePlacement[i]));
     }
 
     return {

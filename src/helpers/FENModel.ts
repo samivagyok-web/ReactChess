@@ -1,5 +1,7 @@
+import { CellItem } from "../types/types";
+
 export interface FENModel {
-    piecePlacement: string,
+    piecePlacement: CellItem[],
     activePlayer: string,
     castlingRights: string,
     possibleEnPassant: string,
