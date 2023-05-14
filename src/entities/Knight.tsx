@@ -1,5 +1,6 @@
 import { Piece } from "../contracts/Piece";
 import { getPieceIllustration } from "../helpers/FENHelper";
+import { CellItem } from "../types/types";
 
 export class Knight implements Piece {
     code: string;
@@ -10,7 +11,7 @@ export class Knight implements Piece {
         this.element = getPieceIllustration(code);
     }    
 
-    getAvailableMoves(fen: string, pieceIndex: number) : number[] {
+    getAvailableMoves(pieces: CellItem[], pieceIndex: number) : number[] {
         return []
     }
 }

@@ -22,13 +22,7 @@ const BoardRepresentation = ({ FEN }: Props) => {
     }
 
     const onCellClick = (idx: number) => {
-        if (selectedCellIndex != -1) {
-            move();
-
-            return;
-        }
-
-        setSelectedCellIndex(idx);
+        
     }
 
     const move = () => {
@@ -38,7 +32,7 @@ const BoardRepresentation = ({ FEN }: Props) => {
     return (
         <div className="wrapper">
             {
-                [...decipheredFen.piecePlacement].map((item, idx) => {
+                ...decipheredFen.piecePlacement.map((item, idx) => {
                     return (
                         <div
                             key={idx}
