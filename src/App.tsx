@@ -1,13 +1,9 @@
 import './App.css';
-import Board from './entities/Board';
+import BoardRepresentation from './components/BoardRepresentation';
 
 function App() {
-  const board = new Board();
-
   return (
-    <>
-      {board.getBoardRepresentation()}
-    </>
+    <BoardRepresentation/>
   )
 }
 

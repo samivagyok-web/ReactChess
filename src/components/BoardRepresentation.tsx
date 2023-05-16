@@ -2,14 +2,12 @@ import { useState } from "react";
 import { decipherFEN } from "../helpers/FENHelper";
 import "./style.css";
 import { CellItem } from "../types/types";
+import { FENModel } from "../models/FENModel";
+import { PieceType } from "../enums/PieceType";
 
-interface Props {
-    FEN: string;
-    move: (previousCell: number, newCell: number) => void
-}
-
-const BoardRepresentation = ({ FEN }: Props) => {
-    const decipheredFen = decipherFEN(FEN);
+const BoardRepresentation = () => {
+    const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+    const [decipheredFen, setDecipheredFen] = useState<FENModel>(decipherFEN(STARTING_FEN));
     
     const [selectedCellIndex, setSelectedCellIndex] = useState<number>(-1);
     const [selectedPieceAvailableMoves, setSelectedPieceAvailableMoves] = useState<number[]>([]);
@@ -35,6 +33,8 @@ const BoardRepresentation = ({ FEN }: Props) => {
                 setSelectedPieceAvailableMoves([]);
             } else {
                 move(selectedCellIndex, cellIndex);
+                setSelectedCellIndex(-1);
+                setSelectedPieceAvailableMoves([]);
             }
 
             setSelectedCellIndex(-1);
@@ -48,7 +48,15 @@ const BoardRepresentation = ({ FEN }: Props) => {
     }
 
     const move = (fromIndex: number, toIndex: number) => {
-        console.log(fromIndex, toIndex);
+        const temp = [...decipheredFen.piecePlacement];
+        temp[toIndex] = temp[fromIndex];
+        temp[fromIndex] = undefined;
+
+        setDecipheredFen({
+            ...decipheredFen,
+            piecePlacement: temp,
+            activePlayer: decipheredFen.activePlayer == PieceType.White ? PieceType.Black : PieceType.White
+        })
     }
 
     return (
