@@ -1,8 +1,9 @@
+import { PieceType } from "../enums/PieceType";
 import { CellItem } from "../types/types";
 
 export interface FENModel {
     piecePlacement: CellItem[],
-    activePlayer: string,
+    activePlayer: PieceType,
     castlingRights: string,
     possibleEnPassant: string,
     halfmoveClock: number,

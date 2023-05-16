@@ -7,7 +7,7 @@ import { CellItem } from "../types/types";
 export class Pawn implements Piece {
     code: string;
     element: JSX.Element;
-    private type: PieceType;
+    readonly type: PieceType;
 
     constructor(code: string) {
         this.code = code;

@@ -73,7 +73,7 @@ export const decipherFEN = (FEN: string): FENModel => {
 
     return {
         piecePlacement: piecePlacement,
-        activePlayer: splitFEN[1],
+        activePlayer: splitFEN[1] == 'w' ? PieceType.White : PieceType.Black,
         castlingRights: splitFEN[2],
         possibleEnPassant: splitFEN[3],
         halfmoveClock: parseInt(splitFEN[4]),

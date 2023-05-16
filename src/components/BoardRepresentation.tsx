@@ -25,8 +25,10 @@ const BoardRepresentation = ({ FEN }: Props) => {
         return (modulo + division) % 2 == 0 ? '#ffffff' : '#baca44';
     }
 
+    const isEmptyCell = (cell: CellItem) => cell == undefined;
+
     const onCellClick = (item: CellItem, cellIndex: number) => {
-        if (!item) {
+        if (isEmptyCell(item) || item?.type != decipheredFen.activePlayer) {
             const selectedAvailableMove = selectedPieceAvailableMoves.find(p => p == cellIndex); 
 
             if (!selectedAvailableMove) {
@@ -35,7 +37,7 @@ const BoardRepresentation = ({ FEN }: Props) => {
                 move(selectedCellIndex, cellIndex);
             }
 
-            // if there was already a piece selected try to move, or remove available moves
+            setSelectedCellIndex(-1);
             return;
         }
 
