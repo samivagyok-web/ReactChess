@@ -11,8 +11,10 @@ import WhitePawn from "../assets/pieces/white/WhitePawn";
 import WhiteQueen from "../assets/pieces/white/WhiteQueen";
 import WhiteRook from "../assets/pieces/white/WhiteRook";
 import { CellItem } from "../types/types";
-import { FENModel } from "./FENModel";
+import { FENModel } from "../models/FENModel";
 import { getPieceFromCode } from "./PieceStrategy";
+import { PieceType } from "../enums/PieceType";
+import { PieceEdge } from "../models/PieceEdgeModel";
 
 export const getPieceIllustration = (character: string): JSX.Element => {
     switch (character) {
@@ -30,6 +32,23 @@ export const getPieceIllustration = (character: string): JSX.Element => {
         case 'R': return <WhiteRook/>
         default: return <></>
     }
+}
+
+export const getPieceEdgeLogic = (pieceIndex: number): PieceEdge => {
+    return {
+        isOnRightEdge: (pieceIndex + 1) % 8 == 0,
+        isOnLeftEdge: pieceIndex % 8 == 0,
+        isOnTopEdge: pieceIndex >= 0 && pieceIndex <= 7,
+        isOnBottomEdge: pieceIndex <= 63 && pieceIndex >= 55
+    }
+}
+
+export const getPieceTypeFromFenCode = (code: string): PieceType => {
+    if (code >= 'a' && code <= 'z') {
+        return PieceType.Black;
+    }
+
+    return PieceType.White;
 }
 
 export const decipherFEN = (FEN: string): FENModel => {
