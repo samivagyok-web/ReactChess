@@ -14,7 +14,7 @@ export class King implements Piece {
         this.type = getPieceTypeFromFenCode(code);
     }    
     
-    getAvailableMoves(pieces: CellItem[], pieceIndex: number): number[] {
+    getAvailableMoves(pieces: CellItem[][], row: number, column: number): number[][] {
         return [];
     }
 }

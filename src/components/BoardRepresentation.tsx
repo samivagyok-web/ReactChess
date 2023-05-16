@@ -9,48 +9,46 @@ const BoardRepresentation = () => {
     const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
     const [decipheredFen, setDecipheredFen] = useState<FENModel>(decipherFEN(STARTING_FEN));
     
-    const [selectedCellIndex, setSelectedCellIndex] = useState<number>(-1);
-    const [selectedPieceAvailableMoves, setSelectedPieceAvailableMoves] = useState<number[]>([]);
+    const [selectedCellIndex, setSelectedCellIndex] = useState<number[]>([-1, -1]);
+    const [selectedPieceAvailableMoves, setSelectedPieceAvailableMoves] = useState<number[][]>([]);
 
-    const getCellColor = (idx: number) => {
-        if (idx == selectedCellIndex) {
+    const getCellColor = (row: number, column: number) => {
+        if (selectedCellIndex[0] == row && selectedCellIndex[1] == column) {
             return "red";
         }
 
-        const modulo = idx % 8;
-        const division = Math.floor(idx / 8);
-
-        return (modulo + division) % 2 == 0 ? '#ffffff' : '#baca44';
+        return (row + column) % 2 == 0 ? '#ffffff' : '#baca44';
     }
 
     const isEmptyCell = (cell: CellItem) => cell == undefined;
 
-    const onCellClick = (item: CellItem, cellIndex: number) => {
+    const onCellClick = (item: CellItem, row: number, column: number) => {
         if (isEmptyCell(item) || item?.type != decipheredFen.activePlayer) {
-            const selectedAvailableMove = selectedPieceAvailableMoves.find(p => p == cellIndex); 
+            const selectedAvailableMove = selectedPieceAvailableMoves.find(p => p[0] == row && p[1] == column);
 
             if (!selectedAvailableMove) {
                 setSelectedPieceAvailableMoves([]);
             } else {
-                move(selectedCellIndex, cellIndex);
-                setSelectedCellIndex(-1);
+                move(selectedCellIndex[0], selectedCellIndex[1], row, column);
+                setSelectedCellIndex([-1, -1]);
                 setSelectedPieceAvailableMoves([]);
             }
 
-            setSelectedCellIndex(-1);
+            setSelectedCellIndex([-1, -1]);
             return;
         }
 
         setSelectedPieceAvailableMoves(
-            item?.getAvailableMoves(decipheredFen.piecePlacement, cellIndex)!
+            item?.getAvailableMoves(decipheredFen.piecePlacement, row, column)!
         );
-        setSelectedCellIndex(cellIndex);
+        setSelectedCellIndex([row, column]);
     }
 
-    const move = (fromIndex: number, toIndex: number) => {
+    const move = (fromRow: number, fromColumn: number, toRow: number, toColumn: number) => {
+        console.log(fromRow, fromColumn, toRow, toColumn);
         const temp = [...decipheredFen.piecePlacement];
-        temp[toIndex] = temp[fromIndex];
-        temp[fromIndex] = undefined;
+        temp[toRow][toColumn] = temp[fromRow][fromColumn];
+        temp[fromRow][fromColumn] = undefined;
 
         setDecipheredFen({
             ...decipheredFen,
@@ -64,21 +62,25 @@ const BoardRepresentation = () => {
             {
                 ...decipheredFen.piecePlacement.map((item, idx) => {
                     return (
-                        <div
-                            key={idx}
-                            className="cell"
-                            style={{
-                                backgroundColor: getCellColor(idx),
-                                cursor: item ? "grab" : "default",                                
-                            }}
-                            onClick={() => {onCellClick(item, idx)}}
-                        >
-                            <div style={{position: "relative"}}>
-                                {selectedPieceAvailableMoves.some(p => p == idx) && <span className="absolute-center available-move-circle" style={{zIndex: 999}}></span>}
-                                <span className="absolute-center">{item?.element}</span>
-                            </div>                            
-                        </div>
-                    )
+                        item.map((nestedItem, nestedIdx) => {
+                            return (
+                                <div
+                                    key={idx * 8 + nestedIdx}
+                                    className="cell"
+                                    style={{
+                                        backgroundColor: getCellColor(idx, nestedIdx),
+                                        cursor: item ? "grab" : "default",                                
+                                    }}
+                                    onClick={() => {onCellClick(nestedItem, idx, nestedIdx)}}
+                                >
+                                    <div style={{position: "relative"}}>
+                                        {selectedPieceAvailableMoves.some(p => p[0] == idx && p[1] == nestedIdx) && <span className="absolute-center available-move-circle" style={{zIndex: 999}}></span>}
+                                        <span className="absolute-center">{nestedItem?.element}</span>
+                                    </div>                            
+                                </div>
+                            )
+                        })
+                    )                           
                 })
             }
         </div>

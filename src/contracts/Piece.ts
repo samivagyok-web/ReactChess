@@ -5,5 +5,5 @@ export interface Piece {
     code: string;
     element: JSX.Element;
     readonly type: PieceType;
-    getAvailableMoves: (pieces: CellItem[], pieceIndex: number) => number[];
+    getAvailableMoves: (pieces: CellItem[][], row: number, column: number) => number[][];
 }

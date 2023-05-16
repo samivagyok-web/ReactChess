@@ -15,68 +15,68 @@ export class Pawn implements Piece {
         this.type = getPieceTypeFromFenCode(code);        
     }
 
-    getAvailableMoves(pieces: CellItem[], pieceIndex: number): number[] {
+    getAvailableMoves(pieces: CellItem[][], row: number, column: number): number[][] {
         // KEEP IN MIND: PROMOTING, EN PASSANT, CHECK
         
         if (this.type == PieceType.White) {
-            return this.getAvailableMovesWhite(pieces, pieceIndex);
+            return this.getAvailableMovesWhite(pieces, row, column);
         }
 
-        return this.getAvailableMovesBlack(pieces, pieceIndex);
+        return this.getAvailableMovesBlack(pieces, row, column);
     }
 
-    private getAvailableMovesWhite(pieces: CellItem[], pieceIndex: number): number[] {
-        const edgeLogic: PieceEdge = getPieceEdgeLogic(pieceIndex);
+    private getAvailableMovesWhite(pieces: CellItem[][], row: number, column: number): number[][] {
+        const edgeLogic: PieceEdge = getPieceEdgeLogic(row, column);
 
         const availableMoves = [];
 
-        const AHEAD_ONE_INDEX = pieceIndex - 8;
-        const AHEAD_TWO_INDEX = pieceIndex - 16;
-        const AHEAD_ONE_LEFT_TAKE = pieceIndex - 9;
-        const AHEAD_ONE_RIGHT_TAKE = pieceIndex - 7;
+        const AHEAD_ONE = [row - 1, column];
+        const AHEAD_TWO = [row - 2, column];
+        const AHEAD_ONE_LEFT_TAKE = [row - 1, column - 1];
+        const AHEAD_ONE_RIGHT_TAKE = [row - 1, column + 1]
     
-        if (!pieces[AHEAD_ONE_INDEX]) {
-            availableMoves.push(AHEAD_ONE_INDEX);
+        if (!pieces[AHEAD_ONE[0]][AHEAD_ONE[1]]) {
+            availableMoves.push(AHEAD_ONE);
         }
 
-        if ((pieceIndex >= 48 && pieceIndex < 56) && !pieces[AHEAD_ONE_INDEX] && !pieces[AHEAD_TWO_INDEX]) {
-            availableMoves.push(AHEAD_TWO_INDEX);
+        if (row == 6 && !pieces[AHEAD_ONE[0]][AHEAD_ONE[1]] && !pieces[AHEAD_TWO[0]][AHEAD_TWO[1]]) {
+            availableMoves.push(AHEAD_TWO);
         }
 
-        if (pieces[AHEAD_ONE_LEFT_TAKE] && !edgeLogic.isOnLeftEdge) {
+        if (pieces[AHEAD_ONE_LEFT_TAKE[0]][AHEAD_ONE_LEFT_TAKE[1]] && !edgeLogic.isOnLeftEdge) {
             availableMoves.push(AHEAD_ONE_LEFT_TAKE);
         }
 
-        if (pieces[AHEAD_ONE_RIGHT_TAKE] && !edgeLogic.isOnRightEdge) {
+        if (pieces[AHEAD_ONE_RIGHT_TAKE[0]][AHEAD_ONE_RIGHT_TAKE[1]] && !edgeLogic.isOnRightEdge) {
             availableMoves.push(AHEAD_ONE_RIGHT_TAKE);
         }
 
         return availableMoves;
     }
 
-    private getAvailableMovesBlack(pieces: CellItem[], pieceIndex: number): number[] {
-        const edgeLogic: PieceEdge = getPieceEdgeLogic(pieceIndex);
+    private getAvailableMovesBlack(pieces: CellItem[][], row: number, column: number): number[][] {
+        const edgeLogic: PieceEdge = getPieceEdgeLogic(row, column);
 
         const availableMoves = [];
 
-        const AHEAD_ONE_INDEX = pieceIndex + 8;
-        const AHEAD_TWO_INDEX = pieceIndex + 16;
-        const AHEAD_ONE_LEFT_TAKE = pieceIndex + 7;
-        const AHEAD_ONE_RIGHT_TAKE = pieceIndex + 9;
+        const AHEAD_ONE = [row + 1, column];
+        const AHEAD_TWO = [row + 2, column];
+        const AHEAD_ONE_LEFT_TAKE = [row + 1, column - 1];
+        const AHEAD_ONE_RIGHT_TAKE = [row + 1, column + 1];
 
-        if (!pieces[AHEAD_ONE_INDEX]) {
-            availableMoves.push(AHEAD_ONE_INDEX);
+        if (!pieces[AHEAD_ONE[0]][AHEAD_ONE[1]]) {
+            availableMoves.push(AHEAD_ONE);
         }
 
-        if ((pieceIndex >= 8 && pieceIndex < 16) && !pieces[AHEAD_ONE_INDEX] && !pieces[AHEAD_TWO_INDEX]) {
-            availableMoves.push(AHEAD_TWO_INDEX);
+        if (row == 1 && !pieces[AHEAD_ONE[0]][AHEAD_ONE[1]] && !pieces[AHEAD_TWO[0]][AHEAD_TWO[1]]) {
+            availableMoves.push(AHEAD_TWO);
         }
 
-        if (pieces[AHEAD_ONE_LEFT_TAKE] && !edgeLogic.isOnLeftEdge) {
+        if (pieces[AHEAD_ONE_LEFT_TAKE[0]][AHEAD_ONE_LEFT_TAKE[1]] && !edgeLogic.isOnLeftEdge) {
             availableMoves.push(AHEAD_ONE_LEFT_TAKE);
         }
 
-        if (pieces[AHEAD_ONE_RIGHT_TAKE] && !edgeLogic.isOnRightEdge) {
+        if (pieces[AHEAD_ONE_RIGHT_TAKE[0]][AHEAD_ONE_RIGHT_TAKE[1]] && !edgeLogic.isOnRightEdge) {
             availableMoves.push(AHEAD_ONE_RIGHT_TAKE);
         }
 

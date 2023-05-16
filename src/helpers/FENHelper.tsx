@@ -34,12 +34,12 @@ export const getPieceIllustration = (character: string): JSX.Element => {
     }
 }
 
-export const getPieceEdgeLogic = (pieceIndex: number): PieceEdge => {
+export const getPieceEdgeLogic = (row: number, column: number): PieceEdge => {
     return {
-        isOnRightEdge: (pieceIndex + 1) % 8 == 0,
-        isOnLeftEdge: pieceIndex % 8 == 0,
-        isOnTopEdge: pieceIndex >= 0 && pieceIndex <= 7,
-        isOnBottomEdge: pieceIndex <= 63 && pieceIndex >= 55
+        isOnRightEdge: column == 7,
+        isOnLeftEdge: column == 0,
+        isOnTopEdge: row == 0,
+        isOnBottomEdge: row == 7
     }
 }
 
@@ -55,28 +55,43 @@ export const decipherFEN = (FEN: string): FENModel => {
     const splitFEN = FEN.split(" ");
     const sanitizedPiecePlacement = splitFEN[0].replaceAll('/', '');
     
-    let piecePlacement: CellItem[] = [];
+    let flattenedPiecePlacement: CellItem[] = [];
 
     for (let i = 0; i < sanitizedPiecePlacement.length; i++) {
         if (sanitizedPiecePlacement[i] > '0' && sanitizedPiecePlacement[i] < '9') {
             const numericValue = parseInt(sanitizedPiecePlacement[i]);
 
             for (let j = 0; j < numericValue; j++) {
-                piecePlacement.push(undefined);
+                flattenedPiecePlacement.push(undefined);
             }
 
             continue;
         }
 
-        piecePlacement.push(getPieceFromCode(sanitizedPiecePlacement[i]));
+        flattenedPiecePlacement.push(getPieceFromCode(sanitizedPiecePlacement[i]));
     }
 
     return {
-        piecePlacement: piecePlacement,
+        piecePlacement: oneDimensionToTwo(flattenedPiecePlacement),
         activePlayer: splitFEN[1] == 'w' ? PieceType.White : PieceType.Black,
         castlingRights: splitFEN[2],
         possibleEnPassant: splitFEN[3],
         halfmoveClock: parseInt(splitFEN[4]),
         fullmoveNumber: parseInt(splitFEN[5])
     }
+}
+
+const oneDimensionToTwo = (list: CellItem[]) => {
+    var matrix: CellItem[][] = [], i, k;
+
+    for (i = 0, k = -1; i < list.length; i++) {
+        if (i % 8 === 0) {
+            k++;
+            matrix[k] = [];
+        }
+
+        matrix[k].push(list[i]);
+    }
+
+    return matrix;
 }
