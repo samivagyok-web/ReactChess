@@ -1,6 +1,6 @@
 import { Piece } from "../contracts/Piece";
 import { PieceType } from "../enums/PieceType";
-import { getPieceIllustration, getPieceTypeFromFenCode } from "../helpers/FENHelper";
+import { getPieceIllustration, getPieceTypeFromFenCode, isAvailableRule } from "../helpers/FENHelper";
 import { CellItem } from "../types/types";
 
 export class Rook implements Piece {
@@ -15,6 +15,46 @@ export class Rook implements Piece {
     }    
 
     getAvailableMoves(pieces: CellItem[][], row: number, column: number): number[][] {
-        return [];
+        const availableMoves: number[][] = [];
+
+        const stop = {
+            up: false, right: false, down: false, left: false
+        };
+
+        for (let i = 1; i < 8; i++) {
+            if (!stop.up) {
+                const moveLogic = isAvailableRule(pieces, row - i, column, this.type);
+
+                if (moveLogic.move) availableMoves.push(moveLogic.move);
+                if (moveLogic.stop) stop.up = true;
+            }
+
+            if (!stop.right) {
+                const moveLogic = isAvailableRule(pieces, row, column + i, this.type);
+
+                if (moveLogic.move) availableMoves.push(moveLogic.move);
+                if (moveLogic.stop) stop.right = true;
+            }
+
+            if (!stop.down) {
+                const moveLogic = isAvailableRule(pieces, row + i, column, this.type);
+
+                if (moveLogic.move) availableMoves.push(moveLogic.move);
+                if (moveLogic.stop) stop.down = true;
+            }
+
+            if (!stop.left) {
+                const moveLogic = isAvailableRule(pieces, row, column - i, this.type);
+
+                if (moveLogic.move) availableMoves.push(moveLogic.move);
+                if (moveLogic.stop) stop.left = true;
+            }
+
+            if (stop.up && stop.down && stop.right && stop.left) {
+                break;
+            }
+        }
+
+        return availableMoves;
     }
 }

@@ -51,6 +51,26 @@ export const getPieceTypeFromFenCode = (code: string): PieceType => {
     return PieceType.White;
 }
 
+export const isAvailableRule = (pieces: CellItem[][], row: number, column: number, pieceType: PieceType): {stop: boolean, move: number[]} => {
+    if (row < 0 || row > 7) {
+        return {stop: true, move: []};
+    }
+
+    if (column < 0 || column > 7) {
+        return {stop: true, move: []};
+    }
+
+    if (!pieces[row][column]) {
+        return {stop: false, move: [row, column]}
+    }
+
+    if (pieces[row][column]?.type != pieceType) {
+        return {stop: true, move: [row, column]}
+    }
+
+    return {stop: true, move: []}
+}
+
 export const decipherFEN = (FEN: string): FENModel => {
     const splitFEN = FEN.split(" ");
     const sanitizedPiecePlacement = splitFEN[0].replaceAll('/', '');
